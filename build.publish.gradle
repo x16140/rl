@@ -1,0 +1,22 @@
+publishing {
+    publications {
+        "$project.name"(MavenPublication) {
+            from components.java
+        }
+    }
+
+    repositories {
+        maven {
+            url 'https://maven.pkg.github.com/techno-dynamics/rl/rl'
+
+            credentials(HttpHeaderCredentials) {
+                name = 'Private-Token'
+                value = mavenToken
+            }
+
+            authentication {
+                header(HttpHeaderAuthentication)
+            }
+        }
+    }
+}

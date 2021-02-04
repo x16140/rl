@@ -1,0 +1,6 @@
+rootProject.name = 'rl'
+
+include 'ftclib'
+include 'testlib'
+include 'ftcprocessor'
+
