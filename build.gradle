@@ -7,7 +7,7 @@ apply from: 'build.publish.gradle'
 
 allprojects {
     group = 'io.arct'
-    version = '0.2.6'
+    version = '0.1.0'
 
     buildDir = rootProject.buildDir
 
