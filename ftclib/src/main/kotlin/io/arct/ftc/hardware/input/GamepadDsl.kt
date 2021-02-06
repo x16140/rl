@@ -24,7 +24,7 @@ class GamepadDsl internal constructor() {
         active.add(condition to action)
 
     fun active(trigger: (Controller) -> Double, threshold: Double = 0.5, action: () -> Unit) =
-        active(fun(gamepad: Controller): Boolean = if (threshold >= 0) trigger(gamepad) > 0.5 else trigger(gamepad) < -threshold, action)
+        active(fun(gamepad: Controller): Boolean = if (threshold >= 0) trigger(gamepad) > threshold else trigger(gamepad) < -threshold, action)
 
     fun active(action: () -> Unit) =
         active({ true }, action)
