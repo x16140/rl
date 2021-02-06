@@ -8,20 +8,20 @@ interface Controller : Device {
 
     val dpad: DPad
 
-    val a: Boolean
-    val b: Boolean
-    val x: Boolean
-    val y: Boolean
+    val a: Button
+    val b: Button
+    val x: Button
+    val y: Button
 
-    val lb: Boolean
-    val rb: Boolean
+    val lb: Button
+    val rb: Button
 
     val lt: Double
     val rt: Double
 
-    val back: Boolean
-    val guide: Boolean
-    val start: Boolean
+    val back: Button
+    val guide: Button
+    val start: Button
 
     override fun close(): Controller
     override fun reset(): Controller

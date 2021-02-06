@@ -1,7 +1,5 @@
 package io.arct.rl.eventloop
 
-import io.arct.rl.hardware.HardwareMap
-
 interface ProgramLoop {
     suspend fun exit()
 

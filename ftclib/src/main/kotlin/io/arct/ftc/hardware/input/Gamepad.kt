@@ -1,5 +1,6 @@
 package io.arct.ftc.hardware.input
 
+import io.arct.rl.hardware.input.Button
 import io.arct.rl.hardware.input.Controller
 import io.arct.rl.hardware.input.DPad
 import io.arct.rl.hardware.input.Joystick
@@ -8,41 +9,30 @@ class Gamepad internal constructor(private val __sdk: () -> com.qualcomm.robotco
     private val gamepad
         get() = __sdk()
 
-    override val left: Joystick = object : Joystick {
-        override val origin: Boolean get() = gamepad.left_stick_y == 0f && gamepad.left_stick_x == 0f
-        override val x: Double get() = gamepad.left_stick_x.toDouble()
-        override val y: Double get() = gamepad.left_stick_y.toDouble()
-        override val pressed: Boolean get() = gamepad.left_stick_button
-    }
-
-    override val right: Joystick = object : Joystick {
-        override val origin: Boolean get() = gamepad.right_stick_y == 0f && gamepad.right_stick_x == 0f
-        override val x: Double get() = gamepad.right_stick_x.toDouble()
-        override val y: Double get() = gamepad.right_stick_y.toDouble()
-        override val pressed: Boolean get() = gamepad.right_stick_button
-    }
+    override val left: Joystick = GamepadJoystickLeft(::gamepad)
+    override val right: Joystick = GamepadJoystickRight(::gamepad)
 
     override val dpad: DPad = object : DPad {
-        override val up: Boolean get() = gamepad.dpad_up
-        override val down: Boolean get() = gamepad.dpad_down
-        override val left: Boolean get() = gamepad.dpad_left
-        override val right: Boolean get() = gamepad.dpad_right
+        override val up: Button = GamepadButton(gamepad::dpad_up)
+        override val down: Button = GamepadButton(gamepad::dpad_down)
+        override val left: Button = GamepadButton(gamepad::dpad_left)
+        override val right: Button = GamepadButton(gamepad::dpad_right)
     }
 
-    override val a: Boolean get() = gamepad.a
-    override val b: Boolean get() = gamepad.b
-    override val x: Boolean get() = gamepad.x
-    override val y: Boolean get() = gamepad.y
+    override val a: Button = GamepadButton(gamepad::a)
+    override val b: Button = GamepadButton(gamepad::b)
+    override val x: Button = GamepadButton(gamepad::x)
+    override val y: Button = GamepadButton(gamepad::y)
 
-    override val lb: Boolean get() = gamepad.left_bumper
-    override val rb: Boolean get() = gamepad.right_bumper
+    override val lb: Button = GamepadButton(gamepad::left_bumper)
+    override val rb: Button = GamepadButton(gamepad::right_bumper)
 
     override val lt: Double get() = gamepad.left_trigger.toDouble()
     override val rt: Double get() = gamepad.right_trigger.toDouble()
 
-    override val back: Boolean get() = gamepad.back
-    override val guide: Boolean get() = gamepad.guide
-    override val start: Boolean get() = gamepad.start
+    override val back: Button = GamepadButton(gamepad::back)
+    override val guide: Button = GamepadButton(gamepad::guide)
+    override val start: Button = GamepadButton(gamepad::start)
 
     override fun close(): Gamepad =
         this
@@ -55,4 +45,29 @@ class Gamepad internal constructor(private val __sdk: () -> com.qualcomm.robotco
 
     override val version: Int =
         0
+
+    operator fun invoke(fn: GamepadDsl.() -> Unit) {
+        val dsl = GamepadDsl()
+        fn(dsl)
+
+        for ((condition, action) in dsl.active)
+            if (condition(this))
+                action()
+
+        for ((buttonFn, rising, action) in dsl.click) {
+            val button = buttonFn(this) as? GamepadButton ?: continue
+
+            if (button.pressed) {
+                if (!button.previous && rising)
+                    action()
+
+                button.previous = true
+            } else {
+                if (button.previous && !rising)
+                    action()
+
+                button.previous = false
+            }
+        }
+    }
 }
