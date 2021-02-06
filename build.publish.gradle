@@ -1,3 +1,6 @@
+def Properties properties = new Properties()
+properties.load(project.rootProject.file("local.properties").newDataInputStream())
+
 publishing {
     publications {
         "$project.name"(MavenPublication) {
@@ -7,15 +10,12 @@ publishing {
 
     repositories {
         maven {
-            url 'https://maven.pkg.github.com/techno-dynamics/rl/rl'
+            name = 'Packages'
+            url 'https://maven.pkg.github.com/techno-dynamics/rl'
 
-            credentials(HttpHeaderCredentials) {
-                name = 'Private-Token'
-                value = mavenToken
-            }
-
-            authentication {
-                header(HttpHeaderAuthentication)
+            credentials {
+                username = properties.getProperty('publish.user') ?: System.getenv("USERNAME")
+                password = properties.getProperty('publish.key') ?: System.getenv("TOKEN")
             }
         }
     }
