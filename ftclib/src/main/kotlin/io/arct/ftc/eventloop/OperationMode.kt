@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import io.arct.rl.eventloop.ProgramLoop
 
 abstract class OperationMode : FHardwareMap(current!!), ProgramLoop {
-    private val __sdk: OpMode = current!!
+    protected open val __sdk: OpMode = current!!
 
     init {
         op = this

@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import io.arct.rl.eventloop.Program
 
 abstract class LinearOperationMode : OperationMode(), Program {
-    private val __sdk: LinearOpMode = (current as? LinearOpMode?)!!
+    override val __sdk: LinearOpMode = (current as? LinearOpMode?)!!
 
     val started: Boolean
         get() = __sdk.isStarted
