@@ -2,6 +2,7 @@ package io.arct.rl.control
 
 import io.arct.rl.hardware.input.Controller
 import io.arct.rl.hardware.input.Joystick
+import io.arct.rl.robot.drive.IDrive
 import io.arct.rl.robot.drive.MecanumDrive
 import io.arct.rl.units.Angle
 import kotlin.math.min
@@ -9,12 +10,12 @@ import kotlin.math.pow
 import kotlin.math.sqrt
 
 class MecanumControl(
-    drive: MecanumDrive,
+    drive: IDrive,
     val joystick: Controller.() -> Joystick,
     val maxSpeed: Double = 1.0,
     val invertY: Boolean = false,
     val invertX: Boolean = false
-) : Control<MecanumDrive>(drive) {
+) : Control(drive) {
     override fun apply(controller: Controller) {
         val joystick = this.joystick(controller)
         val velocity = drive.velocity * maxSpeed

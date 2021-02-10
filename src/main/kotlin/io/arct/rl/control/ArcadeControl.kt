@@ -2,15 +2,15 @@ package io.arct.rl.control
 
 import io.arct.rl.hardware.input.Controller
 import io.arct.rl.hardware.input.Joystick
-import io.arct.rl.robot.drive.Drive
+import io.arct.rl.robot.drive.IDrive
 
 class ArcadeControl(
-    drive: Drive,
+    drive: IDrive,
     val joystick: Controller.() -> Joystick,
     val maxSpeed: Double = 1.0,
     val invertY: Boolean = false,
     val invertX: Boolean = false
-) : Control<Drive>(drive) {
+) : Control(drive) {
     override fun apply(controller: Controller) {
         val joystick = this.joystick(controller)
         val velocity = drive.velocity * maxSpeed
