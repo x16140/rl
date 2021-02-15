@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import io.arct.rl.eventloop.ProgramLoop
 
 abstract class OperationMode : FHardwareMap(current!!), ProgramLoop {
-    protected open val __sdk: OpMode = current!!
+    private val __sdk: OpMode = current!!
 
     init {
         op = this
@@ -17,6 +17,8 @@ abstract class OperationMode : FHardwareMap(current!!), ProgramLoop {
 
     override suspend fun exit(): Unit =
         __sdk.requestOpModeStop()
+
+    open fun __get_sdk() = __sdk
 
     open suspend fun initLoop() {}
     open suspend fun start() {}
