@@ -11,7 +11,7 @@ import io.arct.ftc.hardware.motors.FServo
 import io.arct.ftc.hardware.sensors.FColorSensor
 import io.arct.ftc.hardware.sensors.FGyroSensor
 import io.arct.ftc.hardware.sensors.FTouchSensor
-import io.arct.ftc.hardware.sensors.Imu
+import io.arct.ftc.hardware.sensors.FImu
 import io.arct.rl.hardware.Device
 import io.arct.rl.hardware.input.Controller
 import io.arct.rl.hardware.devices.DigitalDevice
@@ -110,11 +110,11 @@ abstract class FHardwareMap internal constructor(private val __sdk: OpMode) {
         TouchSensor.get(property.name)
 
     // Imu
-    fun Imu.Companion.get(identifier: String): Imu =
-        Imu(getSdk(identifier), op)
+    fun FImu.Companion.get(identifier: String): FImu =
+        FImu(getSdk(identifier), op)
 
-    operator fun Imu.Companion.getValue(thisRef: Any?, property: KProperty<*>): Imu =
-        Imu.get(property.name)
+    operator fun FImu.Companion.getValue(thisRef: Any?, property: KProperty<*>): FImu =
+        FImu.get(property.name)
 
     // Basic Motor
     fun Device.Companion.get(identifier: String): FDevice =

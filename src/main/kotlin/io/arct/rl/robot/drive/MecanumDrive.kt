@@ -5,6 +5,7 @@ import io.arct.rl.extensions.normalize
 import io.arct.rl.hardware.motors.Motor
 import io.arct.rl.navigation.DirectedPath
 import io.arct.rl.robot.position.DynamicPositioning
+import io.arct.rl.robot.position.TripleOdometry
 import io.arct.rl.units.*
 import kotlin.math.sin
 import kotlinx.coroutines.delay
@@ -56,8 +57,27 @@ class MecanumDrive(
         val initial = robot.position
         move(direction, speed)
 
-        while (initial distance robot.position <= distance && (program == null || program.active))
+        while (initial distance robot.position <= distance && (program == null || program.active)) {
             DynamicPositioning.updateLinear(robot.positioning)
+
+            val odometry: TripleOdometry = robot.positioning as? TripleOdometry
+                ?: continue
+
+            val y1 = odometry.y1.position
+            val y2 = odometry.y2.position
+
+            if (direction == Angle.Forward) when {
+                abs((y2 - y1).cm.value) < 3 ->                 move(direction, speed)
+                odometry.y1.position > odometry.y2.position -> turn(speed - velocity * 0.1, speed)
+                odometry.y1.position < odometry.y2.position -> turn(speed - velocity, -speed)
+            }
+
+            if (direction == Angle.Backward) when {
+                abs((y2 - y1).cm.value) < 3 ->                 move(direction, speed)
+                odometry.y1.position < odometry.y2.position -> turn(speed - velocity * 0.1, speed)
+                odometry.y1.position > odometry.y2.position -> turn(speed - velocity, -speed)
+            }
+        }
 
         stop()
 

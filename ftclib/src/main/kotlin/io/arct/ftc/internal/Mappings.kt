@@ -35,7 +35,7 @@ internal val SdkMap: Map<KClass<out Device>, Class<*>> = mapOf(
     FServo::class to           com.qualcomm.robotcore.hardware.Servo::class.java,
     FColorSensor::class to     com.qualcomm.robotcore.hardware.ColorSensor::class.java,
     FGyroSensor::class to      com.qualcomm.robotcore.hardware.GyroSensor::class.java,
-    Imu::class to             BNO055IMU::class.java,
+    FImu::class to             BNO055IMU::class.java,
     FTouchSensor::class to     com.qualcomm.robotcore.hardware.TouchSensor::class.java,
     FDevice::class to          HardwareDevice::class.java
 )

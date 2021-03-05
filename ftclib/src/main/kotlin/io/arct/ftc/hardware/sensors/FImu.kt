@@ -7,7 +7,7 @@ import io.arct.ftc.hardware.FDevice
 import io.arct.rl.hardware.Device
 import org.firstinspires.ftc.robotcore.external.navigation.*
 
-class Imu internal constructor(private val __sdk: BNO055IMU, private val __op: OperationMode) : Device {
+class FImu internal constructor(private val __sdk: BNO055IMU, private val __op: OperationMode) : Device {
     override val name: String = __sdk.systemStatus.name
     override val version: Int = 0
 
@@ -84,7 +84,7 @@ class Imu internal constructor(private val __sdk: BNO055IMU, private val __op: O
         pitchMode: BNO055IMU.PitchMode? = null,
         temperatureUnit: BNO055IMU.TempUnit? = null,
         useExternalCrystal: Boolean? = null
-    ): Imu {
+    ): FImu {
         val p = BNO055IMU.Parameters()
 
         accelerationBandwidth?.let { p.accelBandwidth = it }
@@ -114,12 +114,12 @@ class Imu internal constructor(private val __sdk: BNO055IMU, private val __op: O
         return this
     }
 
-    override fun close(): Imu {
+    override fun close(): FImu {
         __sdk.close()
         return this
     }
 
-    override fun reset(): Imu =
+    override fun reset(): FImu =
         init()
 
     companion object
