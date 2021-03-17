@@ -7,8 +7,8 @@ import io.arct.rl.robot.position.Positioning
 import java.lang.Exception
 
 class Robot internal constructor(
-    internal val drive: IDrive,
-    internal val positioning: IPositioning
+    val drive: IDrive,
+    val positioning: IPositioning
 ) : IDrive by drive, IPositioning by positioning
 
 fun robot(fn: RobotBuilder.() -> Unit): Robot {

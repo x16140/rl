@@ -60,23 +60,23 @@ class MecanumDrive(
         while (initial distance robot.position <= distance && (program == null || program.active)) {
             DynamicPositioning.updateLinear(robot.positioning)
 
-            val odometry: TripleOdometry = robot.positioning as? TripleOdometry
-                ?: continue
-
-            val y1 = odometry.y1.position
-            val y2 = odometry.y2.position
-
-            if (direction == Angle.Forward) when {
-                abs((y2 - y1).cm.value) < 3 ->                 move(direction, speed)
-                odometry.y1.position > odometry.y2.position -> turn(speed - velocity * 0.1, speed)
-                odometry.y1.position < odometry.y2.position -> turn(speed - velocity, -speed)
-            }
-
-            if (direction == Angle.Backward) when {
-                abs((y2 - y1).cm.value) < 3 ->                 move(direction, speed)
-                odometry.y1.position < odometry.y2.position -> turn(speed - velocity * 0.1, speed)
-                odometry.y1.position > odometry.y2.position -> turn(speed - velocity, -speed)
-            }
+//            val odometry: TripleOdometry = robot.positioning as? TripleOdometry
+//                ?: continue
+//
+//            val y1 = odometry.y1.position
+//            val y2 = odometry.y2.position
+//
+//            if (direction.deg.general == Angle.Forward.deg.general) when {
+//                abs((y2 - y1).cm.value) < 3 ->                 move(direction, speed)
+//                y1 > y2 -> turn(speed - velocity * 0.1, speed)
+//                y1 < y2 -> turn(speed - velocity, -speed)
+//            }
+//
+//            if (direction.deg.general == Angle.Backward.deg.general) when {
+//                abs((y2 - y1).cm.value) < 3 ->                 move(direction, speed)
+//                y1 < y2 -> turn(speed - velocity * 0.1, speed)
+//                y1 > y2 -> turn(speed - velocity, -speed)
+//            }
         }
 
         stop()
