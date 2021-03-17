@@ -23,7 +23,7 @@ import io.arct.rl.hardware.sensors.ColorSensor
 import io.arct.rl.hardware.sensors.Encoder
 import io.arct.rl.hardware.sensors.GyroSensor
 import io.arct.rl.hardware.sensors.TouchSensor
-import io.arct.rl.units.AngularSpeed
+import io.arct.rl.units.AngularVelocity
 import io.arct.rl.units.Distance
 import java.lang.Exception
 import kotlin.reflect.KProperty
@@ -64,10 +64,10 @@ abstract class FHardwareMap internal constructor(private val __sdk: OpMode) {
 
     // Motor
     fun Motor.Companion.get(
-        identifier: String,
-        speed: AngularSpeed? = null,
-        diameter: Distance? = null,
-        ticksPerDeg: Double = 1.0
+            identifier: String,
+            speed: AngularVelocity? = null,
+            diameter: Distance? = null,
+            ticksPerDeg: Double = 1.0
     ): FMotor =
         FMotor(getSdk(identifier), op, speed, diameter, ticksPerDeg)
 

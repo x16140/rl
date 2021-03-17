@@ -22,6 +22,10 @@ class TripleOdometry(
     var y2a: Angle = y2.angle
     var x1d: Distance = x.position
 
+    init {
+        zero()
+    }
+
     override fun zero(): TripleOdometry {
         y1.zero()
         y2.zero()

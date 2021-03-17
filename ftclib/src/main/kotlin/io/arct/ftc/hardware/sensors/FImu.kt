@@ -5,29 +5,61 @@ import com.qualcomm.robotcore.hardware.I2cAddr
 import io.arct.ftc.eventloop.OperationMode
 import io.arct.ftc.hardware.FDevice
 import io.arct.rl.hardware.Device
+import io.arct.rl.hardware.sensors.Imu
+import io.arct.rl.units.*
+import io.arct.rl.units.AngularVelocity
 import org.firstinspires.ftc.robotcore.external.navigation.*
+import org.firstinspires.ftc.robotcore.external.navigation.Velocity
 
-class FImu internal constructor(private val __sdk: BNO055IMU, private val __op: OperationMode) : Device {
+private fun unit(u: DistanceUnit) = when (u) {
+    DistanceUnit.CM -> Distance.Unit.Centimeter
+    DistanceUnit.INCH -> Distance.Unit.Inch
+    DistanceUnit.METER -> Distance.Unit.Meter
+    DistanceUnit.MM -> TODO()
+}
+
+private fun unit(u: AngleUnit) = when (u) {
+    AngleUnit.DEGREES -> Angle.Unit.Degree
+    AngleUnit.RADIANS -> Angle.Unit.Radian
+}
+
+class FImu internal constructor(private val __sdk: BNO055IMU, private val __op: OperationMode) : Imu {
     override val name: String = __sdk.systemStatus.name
     override val version: Int = 0
 
     val manufacturer: FDevice.Manufacturer = FDevice.Manufacturer.Other
     val connectionInfo: String = __sdk.systemStatus.toString()
 
-    val acceleration
-        get() = __sdk.acceleration
+    override val acceleration
+        get() = Space(
+                Distance(__sdk.acceleration.xAccel, unit(__sdk.acceleration.unit)) per second per second,
+                Distance(__sdk.acceleration.yAccel, unit(__sdk.acceleration.unit)) per second per second,
+                Distance(__sdk.acceleration.zAccel, unit(__sdk.acceleration.unit)) per second per second
+        )
 
-    val orientation: Orientation
-        get() = __sdk.angularOrientation
+    override val orientation
+        get() = Space(
+                Angle(__sdk.angularOrientation.firstAngle.toDouble(), unit(__sdk.angularOrientation.angleUnit)),
+                Angle(__sdk.angularOrientation.secondAngle.toDouble(), unit(__sdk.angularOrientation.angleUnit)),
+                Angle(__sdk.angularOrientation.thirdAngle.toDouble(), unit(__sdk.angularOrientation.angleUnit))
+        )
 
-    val angularVelocity: AngularVelocity?
-        get() = __sdk.angularVelocity
+    override val angularVelocity
+        get() = Space(
+                Angle(__sdk.angularVelocity.xRotationRate.toDouble(), unit(__sdk.angularVelocity.unit)) per second,
+                Angle(__sdk.angularVelocity.yRotationRate.toDouble(), unit(__sdk.angularVelocity.unit)) per second,
+                Angle(__sdk.angularVelocity.zRotationRate.toDouble(), unit(__sdk.angularVelocity.unit)) per second
+        )
 
     val calibrationStatus: Byte
         get() = __sdk.calibrationStatus.calibrationStatus
 
-    val gravity: Acceleration
-        get() = __sdk.gravity
+    override val gravity
+        get() = Space(
+                Distance(__sdk.gravity.xAccel, unit(__sdk.gravity.unit)) per second per second,
+                Distance(__sdk.gravity.yAccel, unit(__sdk.gravity.unit)) per second per second,
+                Distance(__sdk.gravity.zAccel, unit(__sdk.gravity.unit)) per second per second
+        )
 
     val acceleratorCalibrated: Boolean
         get() = __sdk.isAccelerometerCalibrated
@@ -41,26 +73,42 @@ class FImu internal constructor(private val __sdk: BNO055IMU, private val __op: 
     val systemCalibrated: Boolean
         get() = __sdk.isSystemCalibrated
 
-    val linearAcceleration: Acceleration
-        get() = __sdk.linearAcceleration
+    override val linearAcceleration
+        get() = Space(
+                Distance(__sdk.linearAcceleration.xAccel, unit(__sdk.linearAcceleration.unit)) per second per second,
+                Distance(__sdk.linearAcceleration.yAccel, unit(__sdk.linearAcceleration.unit)) per second per second,
+                Distance(__sdk.linearAcceleration.zAccel, unit(__sdk.linearAcceleration.unit)) per second per second
+        )
 
     val magneticFlux: MagneticFlux
         get() = __sdk.magneticFieldStrength
 
-    val overallAcceleration: Acceleration
-        get() = __sdk.overallAcceleration
+    override val overallAcceleration
+        get() = Space(
+                Distance(__sdk.overallAcceleration.xAccel, unit(__sdk.overallAcceleration.unit)) per second per second,
+                Distance(__sdk.overallAcceleration.yAccel, unit(__sdk.overallAcceleration.unit)) per second per second,
+                Distance(__sdk.overallAcceleration.zAccel, unit(__sdk.overallAcceleration.unit)) per second per second
+        )
 
-    val position: Position
-        get() = __sdk.position
+    override val position: Space<Distance>
+        get() = Space(
+                Distance(__sdk.position.x, unit(__sdk.position.unit)),
+                Distance(__sdk.position.y, unit(__sdk.position.unit)),
+                Distance(__sdk.position.z, unit(__sdk.position.unit)),
+        )
 
     val quaternionOrientation: Quaternion?
         get() = __sdk.quaternionOrientation
 
-    val temperature: Temperature
-        get() = __sdk.temperature
+    override val temperature: Double
+        get() = __sdk.temperature.toUnit(TempUnit.CELSIUS).temperature
 
-    val velocity: Velocity
-        get() = __sdk.velocity
+    override val velocity
+        get() = Space(
+                Distance(__sdk.velocity.xVeloc, unit(__sdk.velocity.unit)) per second,
+                Distance(__sdk.velocity.yVeloc, unit(__sdk.velocity.unit)) per second,
+                Distance(__sdk.velocity.zVeloc, unit(__sdk.velocity.unit)) per second,
+        )
 
     fun init(
         accelerationBandwidth: BNO055IMU.AccelBandwidth? = null,
@@ -113,6 +161,17 @@ class FImu internal constructor(private val __sdk: BNO055IMU, private val __op: 
 
         return this
     }
+
+    fun startIntegration() {
+        __sdk.startAccelerationIntegration(
+                Position(DistanceUnit.CM, .0, .0, .0, 0L),
+                Velocity(DistanceUnit.CM, .0, .0, .0, 0L),
+                1
+        )
+    }
+
+    fun stopIntegration() =
+            __sdk.stopAccelerationIntegration()
 
     override fun close(): FImu {
         __sdk.close()

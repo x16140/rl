@@ -13,7 +13,7 @@ interface Motor : BasicMotor {
     suspend fun move(speed: Velocity, distance: Distance) =
         move(speed / velocity, distance)
 
-    suspend fun move(speed: AngularSpeed, theta: Angle) =
+    suspend fun move(speed: AngularVelocity, theta: Angle) =
         move(speed / this.speed!!, this.diameter!! / 2 * theta.rad.value)
 
     suspend fun move(path: Path): Motor
@@ -28,7 +28,7 @@ interface Motor : BasicMotor {
     override fun stop(): Motor = super.stop() as Motor
     override fun power(speed: Double): Motor
     override fun power(speed: Velocity): Motor = super.power(speed) as Motor
-    override fun power(speed: AngularSpeed): Motor = super.power(speed) as Motor
+    override fun power(speed: AngularVelocity): Motor = super.power(speed) as Motor
     override fun invert(): Motor = super.invert() as Motor
 
     companion object

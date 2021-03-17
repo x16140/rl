@@ -4,16 +4,16 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple
 import io.arct.ftc.eventloop.OperationMode
 import io.arct.ftc.hardware.FDevice
 import io.arct.rl.hardware.motors.BasicMotor
-import io.arct.rl.units.AngularSpeed
+import io.arct.rl.units.AngularVelocity
 import io.arct.rl.units.Distance
 import java.lang.Exception
 
 open class FBasicMotor internal constructor(
-    private val __sdk: DcMotorSimple,
-    private val __op: OperationMode,
+        private val __sdk: DcMotorSimple,
+        private val __op: OperationMode,
 
-    override val speed: AngularSpeed? = null,
-    override val diameter: Distance? = null
+        override val speed: AngularVelocity? = null,
+        override val diameter: Distance? = null
 ) : FDevice(__sdk, __op), BasicMotor {
 
     override var direction: BasicMotor.Direction

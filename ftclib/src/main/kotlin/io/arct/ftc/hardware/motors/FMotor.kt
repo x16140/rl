@@ -9,12 +9,12 @@ import io.arct.rl.units.*
 import java.lang.Exception
 
 class FMotor internal constructor(
-    internal val __sdk: DcMotor,
-    private val __op: OperationMode,
+        internal val __sdk: DcMotor,
+        private val __op: OperationMode,
 
-    speed: AngularSpeed? = null,
-    diameter: Distance? = null,
-    encoderTicksPerDegree: Double = 1.0
+        speed: AngularVelocity? = null,
+        diameter: Distance? = null,
+        encoderTicksPerDegree: Double = 1.0
 ) : FBasicMotor(__sdk, __op, speed, diameter), Motor {
     var useEncoder: Boolean
         get() = __sdk.mode == DcMotor.RunMode.RUN_USING_ENCODER
@@ -89,7 +89,7 @@ class FMotor internal constructor(
     override fun stop(): Motor = super<FBasicMotor>.stop() as Motor
     override fun power(speed: Double): Motor = super<FBasicMotor>.power(speed) as Motor
     override fun power(speed: Velocity): Motor = super<FBasicMotor>.power(speed) as Motor
-    override fun power(speed: AngularSpeed): Motor = super<FBasicMotor>.power(speed) as Motor
+    override fun power(speed: AngularVelocity): Motor = super<FBasicMotor>.power(speed) as Motor
 
     companion object {
         var ratio: Double = 4.0

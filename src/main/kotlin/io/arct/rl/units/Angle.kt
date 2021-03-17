@@ -47,7 +47,7 @@ data class Angle(override val value: Double, override val unit: Unit) : Quantity
 
     override fun toString() = super.toString()
 
-    infix fun per(time: Time) = AngularSpeed(value, derivedUnit(time))
+    infix fun per(time: Time) = AngularVelocity(value, derivedUnit(time))
 
     enum class Unit(override val value: Double, override val display: String) : Quantity.Unit {
         Degree    (1.0,      "°"),

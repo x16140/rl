@@ -1,14 +1,14 @@
 package io.arct.rl.hardware.motors
 
 import io.arct.rl.hardware.Device
-import io.arct.rl.units.AngularSpeed
+import io.arct.rl.units.AngularVelocity
 import io.arct.rl.units.Distance
 import io.arct.rl.units.Velocity
 
 interface BasicMotor : Device {
     var direction: Direction
 
-    val speed: AngularSpeed?
+    val speed: AngularVelocity?
     val diameter: Distance?
 
     val velocity: Velocity get() {
@@ -23,7 +23,7 @@ interface BasicMotor : Device {
     fun power(speed: Velocity): BasicMotor =
         power(speed / velocity)
 
-    fun power(speed: AngularSpeed): BasicMotor =
+    fun power(speed: AngularVelocity): BasicMotor =
         power(speed / this.speed!!)
 
     fun stop(): BasicMotor {
