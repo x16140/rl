@@ -11,11 +11,11 @@ import io.arct.rl.units.AngularVelocity
 import org.firstinspires.ftc.robotcore.external.navigation.*
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity
 
-private fun unit(u: DistanceUnit) = when (u) {
-    DistanceUnit.CM -> Distance.Unit.Centimeter
-    DistanceUnit.INCH -> Distance.Unit.Inch
-    DistanceUnit.METER -> Distance.Unit.Meter
-    DistanceUnit.MM -> TODO()
+private fun d(t: Number, u: DistanceUnit) = when (u) {
+    DistanceUnit.CM -> Distance(t.toDouble(), Distance.Unit.Centimeter)
+    DistanceUnit.INCH ->Distance(t.toDouble(),  Distance.Unit.Inch)
+    DistanceUnit.METER -> Distance(t.toDouble(), Distance.Unit.Meter)
+    DistanceUnit.MM -> Distance(t.toDouble() / 10.0, Distance.Unit.Centimeter)
 }
 
 private fun unit(u: AngleUnit) = when (u) {
@@ -32,9 +32,9 @@ class FImu internal constructor(private val __sdk: BNO055IMU, private val __op: 
 
     override val acceleration
         get() = Space(
-                Distance(__sdk.acceleration.xAccel, unit(__sdk.acceleration.unit)) per second per second,
-                Distance(__sdk.acceleration.yAccel, unit(__sdk.acceleration.unit)) per second per second,
-                Distance(__sdk.acceleration.zAccel, unit(__sdk.acceleration.unit)) per second per second
+                d(__sdk.acceleration.xAccel, __sdk.acceleration.unit) per second per second,
+                d(__sdk.acceleration.yAccel, __sdk.acceleration.unit) per second per second,
+                d(__sdk.acceleration.zAccel, __sdk.acceleration.unit) per second per second
         )
 
     override val orientation
@@ -56,9 +56,9 @@ class FImu internal constructor(private val __sdk: BNO055IMU, private val __op: 
 
     override val gravity
         get() = Space(
-                Distance(__sdk.gravity.xAccel, unit(__sdk.gravity.unit)) per second per second,
-                Distance(__sdk.gravity.yAccel, unit(__sdk.gravity.unit)) per second per second,
-                Distance(__sdk.gravity.zAccel, unit(__sdk.gravity.unit)) per second per second
+                d(__sdk.gravity.xAccel, __sdk.gravity.unit) per second per second,
+                d(__sdk.gravity.yAccel, __sdk.gravity.unit) per second per second,
+                d(__sdk.gravity.zAccel, __sdk.gravity.unit) per second per second
         )
 
     val acceleratorCalibrated: Boolean
@@ -75,9 +75,9 @@ class FImu internal constructor(private val __sdk: BNO055IMU, private val __op: 
 
     override val linearAcceleration
         get() = Space(
-                Distance(__sdk.linearAcceleration.xAccel, unit(__sdk.linearAcceleration.unit)) per second per second,
-                Distance(__sdk.linearAcceleration.yAccel, unit(__sdk.linearAcceleration.unit)) per second per second,
-                Distance(__sdk.linearAcceleration.zAccel, unit(__sdk.linearAcceleration.unit)) per second per second
+                d(__sdk.linearAcceleration.xAccel, __sdk.linearAcceleration.unit) per second per second,
+                d(__sdk.linearAcceleration.yAccel, __sdk.linearAcceleration.unit) per second per second,
+                d(__sdk.linearAcceleration.zAccel, __sdk.linearAcceleration.unit) per second per second
         )
 
     val magneticFlux: MagneticFlux
@@ -85,16 +85,16 @@ class FImu internal constructor(private val __sdk: BNO055IMU, private val __op: 
 
     override val overallAcceleration
         get() = Space(
-                Distance(__sdk.overallAcceleration.xAccel, unit(__sdk.overallAcceleration.unit)) per second per second,
-                Distance(__sdk.overallAcceleration.yAccel, unit(__sdk.overallAcceleration.unit)) per second per second,
-                Distance(__sdk.overallAcceleration.zAccel, unit(__sdk.overallAcceleration.unit)) per second per second
+                d(__sdk.overallAcceleration.xAccel, __sdk.overallAcceleration.unit) per second per second,
+                d(__sdk.overallAcceleration.yAccel, __sdk.overallAcceleration.unit) per second per second,
+                d(__sdk.overallAcceleration.zAccel, __sdk.overallAcceleration.unit) per second per second
         )
 
     override val position: Space<Distance>
         get() = Space(
-                Distance(__sdk.position.x, unit(__sdk.position.unit)),
-                Distance(__sdk.position.y, unit(__sdk.position.unit)),
-                Distance(__sdk.position.z, unit(__sdk.position.unit)),
+                d(__sdk.position.y, __sdk.position.unit),
+                d(__sdk.position.x, __sdk.position.unit),
+                d(__sdk.position.z, __sdk.position.unit),
         )
 
     val quaternionOrientation: Quaternion?
@@ -105,9 +105,9 @@ class FImu internal constructor(private val __sdk: BNO055IMU, private val __op: 
 
     override val velocity
         get() = Space(
-                Distance(__sdk.velocity.xVeloc, unit(__sdk.velocity.unit)) per second,
-                Distance(__sdk.velocity.yVeloc, unit(__sdk.velocity.unit)) per second,
-                Distance(__sdk.velocity.zVeloc, unit(__sdk.velocity.unit)) per second,
+                d(__sdk.velocity.xVeloc, __sdk.velocity.unit) per second,
+                d(__sdk.velocity.yVeloc, __sdk.velocity.unit) per second,
+                d(__sdk.velocity.zVeloc, __sdk.velocity.unit) per second,
         )
 
     fun init(
