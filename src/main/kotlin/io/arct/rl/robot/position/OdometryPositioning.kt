@@ -4,10 +4,7 @@ import io.arct.rl.hardware.sensors.DistanceEncoder
 import io.arct.rl.hardware.sensors.Imu
 import io.arct.rl.units.*
 import kotlin.concurrent.thread
-import kotlin.math.atan
-import kotlin.math.atan2
-import kotlin.math.cos
-import kotlin.math.sin
+import kotlin.math.*
 
 class OdometryPositioning(
         val y1: DistanceEncoder,
@@ -29,7 +26,6 @@ class OdometryPositioning(
     private var py2 = y2.position
     private var px = x.position
     private var ca = 0.deg
-    private var pa: Angle = rotation
 
     init {
         zero()
@@ -40,25 +36,19 @@ class OdometryPositioning(
 
         thread = thread(start = true) {
             while (true) {
-                var dyb = ((y1.position - py1 + y2.position - py2) / 2).cm.value
-                var dxb = x.position.cm.value
+                val t = (90.deg - rotation).rad.value
 
-                if (dyb == .0)
-                    dyb = Double.MIN_VALUE
+                val dyb = ((y1.position - py1 + y2.position - py2) / 2).cm.value
+                val dxb = x.position.cm.value
+                val db = sqrt(dyb.pow(2) + dxb.pow(2))
 
-                if (dxb == .0)
-                    dxb = Double.MIN_VALUE
-
-                val a = 90.deg - (rotation + (rotation - pa) / 2)
-
-                val db = atan(dyb / dxb).cm
-                val dyf = db * sin(a.rad.value)
-                val dxf = db * cos(a.rad.value)
+                val df = db
+                val dyf = df * sin(t)
+                val dxf = df * cos(t)
 
                 val (cx, cy) = position
-                position = Coordinates(cx + dxf, cy + dyf)
+                position = Coordinates(cx + dxf.cm, cy + dyf.cm)
 
-                pa = rotation
                 py1 = y1.position
                 py2 = y2.position
                 px = x.position
@@ -78,7 +68,6 @@ class OdometryPositioning(
         y2.zero()
         x.zero()
 
-        pa = rotation
         py1 = y1.position
         py2 = y2.position
         px = x.position
