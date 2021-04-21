@@ -39,12 +39,12 @@ class OdometryPositioning(
                 val t = (90.deg - rotation).rad.value
 
                 val dyb = ((y1.position - py1 + y2.position - py2) / 2).cm.value
-                val dxb = x.position.cm.value
+                val dxb = (x.position - px).cm.value
                 val db = sqrt(dyb.pow(2) + dxb.pow(2))
 
                 val df = db
-                val dyf = df * sin(t)
-                val dxf = df * cos(t)
+                val dyf = sign(dyb) * df * sin(t)
+                val dxf = sign(dxb) * df * cos(t)
 
                 val (cx, cy) = position
                 position = Coordinates(cx + dxf.cm, cy + dyf.cm)
@@ -60,6 +60,13 @@ class OdometryPositioning(
 
     fun stop(): OdometryPositioning {
         thread?.interrupt()
+        return this
+    }
+
+    fun offset(x: Distance, y: Distance): OdometryPositioning {
+        zero()
+        position = Coordinates(x, y)
+
         return this
     }
 
